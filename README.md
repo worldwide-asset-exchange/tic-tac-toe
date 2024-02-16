@@ -3,7 +3,7 @@
 ### Test
 
 ```
-    make build-local
+    make build
     npm run test
 ``
 
