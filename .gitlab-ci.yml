@@ -1,0 +1,14 @@
+image: waxteam/ci-sandbox:v0.0.2
+
+stages:
+  - test
+
+tests:
+  stage: test
+  script:
+    - npm install
+    - cdt-cpp --version
+    - make build-local
+    - npm run test
+  tags:
+    - sandbox

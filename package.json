@@ -1,0 +1,33 @@
+{
+  "name": "contract",
+  "version": "1.0.0",
+  "description": "Testing contract smart contract with Hydra",
+  "main": "",
+  "scripts": {
+    "test": "jest --verbose",
+    "lint": "prettier --single-quote --trailing-comma es5 --list-different **/*.js",
+    "prettier": "prettier --single-quote --trailing-comma es5 --write **/*.js",
+    "linter": "npx cc"
+  },
+  "devDependencies": {
+    "jest": "^27.5.1",
+    "prettier": "^2.2.1",
+    "qtest-js": "0.6.0-beta",
+    "cc": "^3.0.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "",
+  "cc": {
+    "linelength": "120",
+    "files": [
+      "**/*.cpp",
+      "**/*.hpp"
+    ],
+    "ignore": [
+      "node_modules/**",
+      "vendor/**"
+    ],
+    "filter": []
+  }
+}

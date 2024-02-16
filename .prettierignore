@@ -1,0 +1,10 @@
+# Ignore artifacts:
+build
+coverage
+
+# Dependency directory
+node_modules
+
+
+# Editors
+.idea
