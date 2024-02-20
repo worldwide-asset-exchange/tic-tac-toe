@@ -8,7 +8,7 @@ tests:
   script:
     - npm install
     - cdt-cpp --version
-    - make build-local
+    - make build
     - npm run test
   tags:
     - sandbox

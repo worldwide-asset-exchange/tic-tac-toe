@@ -7,7 +7,7 @@ See the tutorial documentation [here](docs/contract.md) for a deep dive into how
 ### Test
 
 ```
-    make build-local
+    make build
     npm run test
 ``
 
