@@ -1,5 +1,9 @@
 # Contract
 
+This tic-tac-toe contract provides an example of building a game on WAX, complete with secure use of random values to determine game outcomes.
+
+See the tutorial documentation [here](docs/contract.md) for a deep dive into how everything works and how to test and develop a typical game project.
+
 ### Test
 
 ```
