@@ -2,6 +2,8 @@
 
 ## Overview
 
+![Preview Image](./images/preview_meta_data.png)
+
 This tic-tac-toe contract provides an example of building a game on WAX, complete with secure use of random values to determine game outcomes.
 
 This will guide you how to make the Tictactoe game contract which run on Wax blockchain. Logic of the tictactoe game follow the eosio sample at [Tic-tac-toe Game EOS tutorial](https://developers.eos.io/welcome/v2.1/tutorials/tic-tac-toe-game-smart-contract-single-node), but we'll add more logic that support randomize the first turner and random game move if playing with bot. 
