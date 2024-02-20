@@ -4,6 +4,8 @@ This tic-tac-toe contract provides an example of building a game on WAX, complet
 
 See the tutorial documentation [here](docs/contract.md) for a deep dive into how everything works and how to test and develop a typical game project.
 
+The UI for this project is available [here](https://github.com/worldwide-asset-exchange/tic-tac-toe-front-end)
+
 ### Test
 
 ```
