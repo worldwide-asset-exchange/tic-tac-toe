@@ -17,7 +17,8 @@ void tictactoe::create(const name &challenger,const name &host)
   check(itr == existingHostGames.end(), "Game already exists.");
   const auto &tx_hash = _get_transaction_hash();
   auto random_seed = _hash_to_int(tx_hash);
-  existingHostGames.emplace(get_self(), [&](auto &g) {
+  // charge ram for user hosting the game
+  existingHostGames.emplace(host, [&](auto &g) {
     g.id = game_id;
     g.challenger = challenger;
     g.host = host;
@@ -46,11 +47,11 @@ void tictactoe::receiverand(uint64_t assoc_id, const eosio::checksum256 &random_
   if (itr->turn == "none"_n){
     uint64_t move = result % 2;
     if (move == 0) {
-      existingHostGames.modify(itr, get_self(), [&](auto &g) { 
+      existingHostGames.modify(itr, same_payer, [&](auto &g) {
         g.turn = itr->host; 
       });
     } else {
-      existingHostGames.modify(itr, get_self(), [&](auto &g) { 
+      existingHostGames.modify(itr, same_payer, [&](auto &g) {
         g.turn = itr->challenger; 
       });
       if (itr->challenger == PLAYER_BOT){
@@ -100,7 +101,7 @@ void tictactoe::restart(uint64_t game_id, const name &by)
   check(by == itr->host || by == itr->challenger, "This is not your game.");
 
   // Reset game
-  existingHostGames.modify(itr, itr->host, [](auto &g) { g.resetGame(); });
+  existingHostGames.modify(itr, same_payer, [](auto &g) { g.resetGame(); });
 }
 
 void tictactoe::close(uint64_t game_id)
@@ -197,7 +198,8 @@ void tictactoe::move(uint64_t game_id, const name &by, const uint16_t &row, cons
   auto gameBoard = *itr;
   gameBoard.board[row * game::boardWidth + column] = cellValue;
   auto winner = getWinner(gameBoard);
-  existingHostGames.modify(itr, by, [&](auto &g) {
+  
+  existingHostGames.modify(itr, same_payer, [&](auto &g) {
     g.board[row * game::boardWidth + column] = cellValue;
     g.turn = turn;
     g.winner = winner;
