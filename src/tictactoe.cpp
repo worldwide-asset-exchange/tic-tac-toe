@@ -17,7 +17,8 @@ void tictactoe::create(const name &challenger,const name &host)
   check(itr == existingHostGames.end(), "Game already exists.");
   const auto &tx_hash = _get_transaction_hash();
   auto random_seed = _hash_to_int(tx_hash);
-  existingHostGames.emplace(get_self(), [&](auto &g) {
+  // charge ram for user hosting the game
+  existingHostGames.emplace(host, [&](auto &g) {
     g.id = game_id;
     g.challenger = challenger;
     g.host = host;
@@ -197,6 +198,8 @@ void tictactoe::move(uint64_t game_id, const name &by, const uint16_t &row, cons
   auto gameBoard = *itr;
   gameBoard.board[row * game::boardWidth + column] = cellValue;
   auto winner = getWinner(gameBoard);
+  
+  // charge ram for user making move
   existingHostGames.modify(itr, by, [&](auto &g) {
     g.board[row * game::boardWidth + column] = cellValue;
     g.turn = turn;
