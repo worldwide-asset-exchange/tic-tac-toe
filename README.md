@@ -12,7 +12,16 @@ This will guide you how to make the Tictactoe game contract which run on Wax blo
 
 ### [Smart Contract Tutorial](https://github.com/worldwide-asset-exchange/tic-tac-toe)
 
-### How To Play
+### What you will learn
+- [How the Game Works](#how-the-game-works)
+- [Development Workflow](#development-workflow)
+- [Game Contract Implementation](#game-contract-implementation)
+  - [Requesting Random Values](#requesting-random-values)
+- [Token Contract Usage](#token-contract-usage)
+- [Token Rewards Emissions](#token-rewards-emissions)
+
+
+### How the Game Works
 
 Here's a step-by-step guide on how to play:
 
@@ -45,8 +54,7 @@ And choose `New Game`
 8. **Rematch**: Players can easily start a new game and beginning again.
 
 
-
-## Developing the contract
+## Development Workflow
 
 ### 1. Prerequisites
   - https://github.com/AntelopeIO/cdt: Contract development toolkit for developing the contract
@@ -92,7 +100,7 @@ cleos push action tic.token issue '["tictactoe","1000000.0000 TIC","issue token"
 ```
 
 
-# Tic-tac-toe Smart Contract Tutorial
+# Game Contract Implementation
 
 ### 1. Game Logic
   - Player can create the game in one of two modes: player vs player or player vs bot
@@ -188,7 +196,8 @@ Will be represented as  [1, 2, 1, 1, 2, 2, 2, 1, 1].
 - close(): This action deletes and removes existing game data and frees up any storage the game uses. 
 - move(): This action sets a marker on the gameboard and updates the game board array.
 
-#### Get random number for first turn
+
+#### Requesting Random Values
 
 We talked about using random number from orgn.wax contract to randomize who taking the first turn. In order to do that, in the create() action to create a game we'll have to make a call to the orng.wax contract:
 
@@ -272,7 +281,7 @@ One important logic here is checking for the winner:
 You can see we request the next random number and process the result in **receiverand** action. With a random number we received, we calculate a valid next move and continue to call move on be half of the bot (which is the game contract itself).
 
 
-## TIC Token Smartcontract
+## Token Contract Usage
 
 The game cover a logic when we found the winner, we'll reward him with an amount of TIC token. You can use this logic to issue game's token, let player trade and buy in-game item,...
 
@@ -285,3 +294,21 @@ cleos push action tic.token create '["tictactoe","1000000.0000 TIC"]' -p tic.tok
 cleos push action tic.token issue '["tictactoe","1000000.0000 TIC","issue token"]' -p tictactoe@active
 ```
 
+### Token Rewards Emissions
+
+As part of the `move` action logic, when we find that someone has won the game, we send the winner a reward of 10 TIC token. Here is the subsection that does that.
+
+```
+    auto payout = asset(100000, TIC_SYMBOL);
+    string memo = "payout";
+    if (winner == itr->host){
+        eosio::action(eosio::permission_level{get_self(), eosio::name("active")}, TOKEN_CONTRACT, eosio::name("transfer"),
+          make_tuple(get_self(), itr->host, payout, memo))
+                .send();
+    }else if (winner == itr->challenger && itr->challenger != PLAYER_BOT){
+        eosio::action(eosio::permission_level{get_self(), eosio::name("active")}, TOKEN_CONTRACT, eosio::name("transfer"),
+          make_tuple(get_self(), itr->challenger, payout, memo))
+                .send();
+    }
+```
+If the host or challenger wins, we call the eosio.token#transfer method which has a function signature of `( const name& from, const name& to, const asset& quantity, const string& memo)`. Notice that the 4 decimals of the TIC token are implied in the integer representation, so 100000 in the `payout` definition line actually represents 10.0000 TIC tokens.
